@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		50C6F6272A559FA0002F538D /* SBProgressHUD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50C6F61E2A559F9F002F538D /* SBProgressHUD.framework */; };
-		50C6F6992A55A179002F538D /* SBProgressHUD.h in Headers */ = {isa = PBXBuildFile; fileRef = 50C6F6962A55A179002F538D /* SBProgressHUD.h */; };
 		50C6F69C2A55A18C002F538D /* SBProgressHUDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50C6F69B2A55A18C002F538D /* SBProgressHUDTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -25,7 +24,6 @@
 /* Begin PBXFileReference section */
 		50C6F61E2A559F9F002F538D /* SBProgressHUD.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SBProgressHUD.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		50C6F6262A559FA0002F538D /* SBProgressHUDTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SBProgressHUDTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		50C6F6962A55A179002F538D /* SBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBProgressHUD.h; sourceTree = "<group>"; };
 		50C6F69B2A55A18C002F538D /* SBProgressHUDTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SBProgressHUDTests.swift; path = Tests/SBProgressHUDTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -69,7 +67,6 @@
 		50C6F6952A55A179002F538D /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				50C6F6962A55A179002F538D /* SBProgressHUD.h */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -89,7 +86,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				50C6F6992A55A179002F538D /* SBProgressHUD.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
