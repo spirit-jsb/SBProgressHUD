@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		50C6F6272A559FA0002F538D /* SBProgressHUD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50C6F61E2A559F9F002F538D /* SBProgressHUD.framework */; };
 		50C6F69C2A55A18C002F538D /* SBProgressHUDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50C6F69B2A55A18C002F538D /* SBProgressHUDTests.swift */; };
+		50C6F6A12A55A657002F538D /* SBBackgroundContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50C6F6A02A55A657002F538D /* SBBackgroundContainerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -25,6 +26,7 @@
 		50C6F61E2A559F9F002F538D /* SBProgressHUD.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SBProgressHUD.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		50C6F6262A559FA0002F538D /* SBProgressHUDTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SBProgressHUDTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		50C6F69B2A55A18C002F538D /* SBProgressHUDTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SBProgressHUDTests.swift; path = Tests/SBProgressHUDTests.swift; sourceTree = "<group>"; };
+		50C6F6A02A55A657002F538D /* SBBackgroundContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBBackgroundContainerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +69,7 @@
 		50C6F6952A55A179002F538D /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				50C6F6A02A55A657002F538D /* SBBackgroundContainerView.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -140,6 +143,7 @@
 				TargetAttributes = {
 					50C6F61D2A559F9F002F538D = {
 						CreatedOnToolsVersion = 14.2;
+						LastSwiftMigration = 1420;
 					};
 					50C6F6252A559FA0002F538D = {
 						CreatedOnToolsVersion = 14.2;
@@ -188,6 +192,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50C6F6A12A55A657002F538D /* SBBackgroundContainerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -335,6 +340,7 @@
 		50C6F6312A559FA0002F538D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -358,6 +364,7 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TVOS_DEPLOYMENT_TARGET = "";
@@ -368,6 +375,7 @@
 		50C6F6322A559FA0002F538D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -401,6 +409,7 @@
 		50C6F6342A559FA0002F538D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -423,6 +432,7 @@
 		50C6F6352A559FA0002F538D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
