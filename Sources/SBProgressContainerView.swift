@@ -124,7 +124,60 @@ internal final class SBProgressContainerView: UIView {
     }
 
     private func linearProgressContentPathBuilder(_ rect: CGRect, progress: Float) -> CGPath? {
-        fatalError("linearProgressContentPathBuilder(_:progress:) has not been implemented")
+        let actualRect = rect.inset(by: UIEdgeInsets(top: 1.5, left: 1.5, bottom: 1.5, right: 1.5))
+
+        let amount = actualRect.size.width * CGFloat(progress)
+        
+        let radius = actualRect.size.height / 2.0
+
+        let leftCenter = CGPoint(x: actualRect.minX + radius, y: actualRect.midY)
+        let rightCenter = CGPoint(x: actualRect.minX + actualRect.size.width - radius, y: actualRect.midY)
+
+        let linearProgressContentPath = UIBezierPath()
+
+        if amount > 0 && amount < radius {
+            var angle = acos((radius - amount) / radius)
+            if angle.isNaN {
+                angle = 0.0
+            }
+
+            linearProgressContentPath.move(to: .init(x: actualRect.minX, y: actualRect.midY))
+            linearProgressContentPath.addArc(withCenter: leftCenter, radius: radius, startAngle: .pi, endAngle: .pi + angle, clockwise: true)
+            linearProgressContentPath.addLine(to: .init(x: actualRect.minX + amount, y: actualRect.midY))
+
+            linearProgressContentPath.move(to: .init(x: actualRect.minX, y: actualRect.midY))
+            linearProgressContentPath.addArc(withCenter: leftCenter, radius: radius, startAngle: .pi, endAngle: .pi - angle, clockwise: false)
+            linearProgressContentPath.addLine(to: .init(x: actualRect.minX + amount, y: actualRect.midY))
+        } else if amount >= radius && amount <= (actualRect.size.width - radius) {
+            linearProgressContentPath.move(to: .init(x: actualRect.minX, y: actualRect.midY))
+            linearProgressContentPath.addArc(withCenter: leftCenter, radius: radius, startAngle: .pi, endAngle: 1.5 * .pi, clockwise: true)
+            linearProgressContentPath.addLine(to: .init(x: actualRect.minX + amount, y: actualRect.minY))
+            linearProgressContentPath.addLine(to: .init(x: actualRect.minX + amount, y: actualRect.midY))
+            
+            linearProgressContentPath.move(to: .init(x: actualRect.minX, y: actualRect.midY))
+            linearProgressContentPath.addArc(withCenter: leftCenter, radius: radius, startAngle: .pi, endAngle: 0.5 * .pi, clockwise: false)
+            linearProgressContentPath.addLine(to: .init(x: actualRect.minX + amount, y: actualRect.maxY))
+            linearProgressContentPath.addLine(to: .init(x: actualRect.minX + amount, y: actualRect.midY))
+        } else if amount > (actualRect.size.width - radius) && amount < actualRect.size.width {
+            var angle = acos((amount - (actualRect.size.width - radius)) / radius)
+            if angle.isNaN {
+              angle = 0.0
+            }
+            
+            linearProgressContentPath.move(to: .init(x: actualRect.minX, y: actualRect.midY))
+            linearProgressContentPath.addArc(withCenter: leftCenter, radius: radius, startAngle: .pi, endAngle: 1.5 * .pi, clockwise: true)
+            linearProgressContentPath.addLine(to: .init(x: actualRect.minX + (actualRect.size.width - radius), y: actualRect.minY))
+            linearProgressContentPath.addArc(withCenter: rightCenter, radius: radius, startAngle: 1.5 * .pi, endAngle: (2.0 * .pi) - angle, clockwise: true)
+            linearProgressContentPath.addLine(to: .init(x: actualRect.minX + amount, y: actualRect.midY))
+            
+            linearProgressContentPath.move(to: .init(x: actualRect.minX, y: actualRect.midY))
+            linearProgressContentPath.addArc(withCenter: leftCenter, radius: radius, startAngle: .pi, endAngle: 0.5 * .pi, clockwise: false)
+            linearProgressContentPath.addLine(to: .init(x: actualRect.minX + (actualRect.size.width - radius), y: actualRect.maxY))
+            linearProgressContentPath.addArc(withCenter: rightCenter, radius: radius, startAngle: 0.5 * .pi, endAngle: angle, clockwise: false)
+            linearProgressContentPath.addLine(to: .init(x: actualRect.minX + amount, y: actualRect.midY))
+        }
+
+        return linearProgressContentPath.cgPath
     }
 
     private func doughnutProgressContentPathBuilder(_ rect: CGRect, progress: Float) -> CGPath? {
