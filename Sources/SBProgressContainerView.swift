@@ -128,7 +128,26 @@ internal final class SBProgressContainerView: UIView {
     }
 
     private func doughnutProgressContentPathBuilder(_ rect: CGRect, progress: Float) -> CGPath? {
-        fatalError("doughnutProgressContentPathBuilder(_:progress:) has not been implemented")
+        let lineWidth: CGFloat = 3.0
+
+        let arcCenter: CGPoint = .init(x: rect.midX, y: rect.midY)
+        let startAngle: CGFloat = -0.5 * .pi
+        let endAngle: CGFloat = 2.0 * .pi * CGFloat(progress) + (-0.5 * .pi)
+
+        let doughnutInsideRadius: CGFloat = rect.size.width / 2.0 - lineWidth
+        let doughnutOutsideRadius: CGFloat = rect.size.width / 2.0
+
+        let doughnutInsideContentPath = UIBezierPath(arcCenter: arcCenter, radius: doughnutInsideRadius, startAngle: startAngle, endAngle: endAngle, clockwise: true)
+        doughnutInsideContentPath.addLine(to: arcCenter)
+
+        let doughnutOutsideContentPath = UIBezierPath(arcCenter: arcCenter, radius: doughnutOutsideRadius, startAngle: startAngle, endAngle: endAngle, clockwise: true)
+        doughnutOutsideContentPath.addLine(to: arcCenter)
+
+        let doughnutProgressContentPath = UIBezierPath()
+        doughnutProgressContentPath.append(doughnutInsideContentPath.reversing())
+        doughnutProgressContentPath.append(doughnutOutsideContentPath)
+
+        return doughnutProgressContentPath.cgPath
     }
 
     private func pieProgressContentPathBuilder(_ rect: CGRect, progress: Float) -> CGPath? {
