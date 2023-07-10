@@ -213,7 +213,7 @@ class ViewController: UITableViewController {
     func textLabelStyleExample() {
         let progressHUD = SBProgressHUD.showProgressHUD(onView: self.navigationController?.view, animated: true)
         progressHUD.style = .textLabel
-        progressHUD.titleText = "Hello Choiwan!"
+        progressHUD.titleText = "Hello Spirit!"
         progressHUD.detailsText = "Easy to use translucent HUD framework for iOS with indicators and/or labels"
         progressHUD.offset = UIOffset(horizontal: 0.0, vertical: .greatestFiniteMagnitude)
 
@@ -226,7 +226,7 @@ class ViewController: UITableViewController {
 
         let progressHUD = SBProgressHUD.showProgressHUD(onView: self.navigationController?.view, animated: true)
         progressHUD.style = .customView
-        progressHUD.titleText = "Hello Choiwan!"
+        progressHUD.titleText = "Hello Spirit!"
         progressHUD.customView = customImageView
 
         progressHUD.delayHideProgressHUD(3.0, animated: true)
