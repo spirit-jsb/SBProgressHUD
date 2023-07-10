@@ -120,7 +120,20 @@ internal final class SBProgressContainerView: UIView {
     }
 
     private func progressContentPathBuilder(_ rect: CGRect) -> CGPath? {
-        fatalError("progressContentPathBuilder(_:) has not been implemented")
+        let progress = self.progress
+
+        let progressContentPath: UIBezierPath
+
+        switch self.style {
+        case .linear:
+            progressContentPath = self.linearProgressContentPathBuilder(rect, progress: progress)
+        case .doughnut:
+            progressContentPath = self.doughnutProgressContentPathBuilder(rect, progress: progress)
+        case .pie:
+            progressContentPath = self.pieProgressContentPathBuilder(rect, progress: progress)
+        }
+
+        return progressContentPath.cgPath
     }
 
     private func linearProgressContentPathBuilder(_ rect: CGRect, progress: Float) -> UIBezierPath {
