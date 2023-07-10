@@ -132,7 +132,15 @@ internal final class SBProgressContainerView: UIView {
     }
 
     private func pieProgressContentPathBuilder(_ rect: CGRect, progress: Float) -> CGPath? {
-        fatalError("pieProgressContentPathBuilder(_:progress:) has not been implemented")
+        let arcCenter: CGPoint = .init(x: rect.midX, y: rect.midY)
+        let radius: CGFloat = rect.size.width / 2.0
+        let startAngle: CGFloat = -0.5 * .pi
+        let endAngle: CGFloat = 2.0 * .pi * CGFloat(progress) + (-0.5 * .pi)
+
+        let pieProgressContentPath = UIBezierPath(arcCenter: arcCenter, radius: radius, startAngle: startAngle, endAngle: endAngle, clockwise: true)
+        pieProgressContentPath.addLine(to: arcCenter)
+
+        return pieProgressContentPath.cgPath
     }
 }
 
