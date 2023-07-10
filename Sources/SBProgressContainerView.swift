@@ -96,7 +96,20 @@ internal final class SBProgressContainerView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func draw(_ rect: CGRect) {}
+    override func draw(_ rect: CGRect) {
+        // update content layer
+        self.updateContentLayer(rect)
+
+        let actualRect = rect.inset(by: self.contentMargin).insetBy(dx: 2.0 * self.contentLineWidth, dy: 2.0 * self.contentLineWidth)
+
+        // draw background content
+        let backgroundContentPath = self.backgroundContentPathBuilder(actualRect)
+        self.backgroundContentLayer.path = backgroundContentPath
+
+        // draw prgress content
+        let progressContentPath = self.progressContentPathBuilder(actualRect)
+        self.progressContentLayer.path = progressContentPath
+    }
 
     private func updateContentLayer(_ rect: CGRect) {
         self.backgroundContentLayer.frame = rect
