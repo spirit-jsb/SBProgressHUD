@@ -11,6 +11,7 @@
 		50C6F6272A559FA0002F538D /* SBProgressHUD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50C6F61E2A559F9F002F538D /* SBProgressHUD.framework */; };
 		50C6F69C2A55A18C002F538D /* SBProgressHUDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50C6F69B2A55A18C002F538D /* SBProgressHUDTests.swift */; };
 		50C6F6A12A55A657002F538D /* SBBackgroundContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50C6F6A02A55A657002F538D /* SBBackgroundContainerView.swift */; };
+		94DB14192A5B977B00F12A55 /* SBProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94DB14182A5B977B00F12A55 /* SBProgressHUD.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +30,7 @@
 		50C6F6262A559FA0002F538D /* SBProgressHUDTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SBProgressHUDTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		50C6F69B2A55A18C002F538D /* SBProgressHUDTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SBProgressHUDTests.swift; path = Tests/SBProgressHUDTests.swift; sourceTree = "<group>"; };
 		50C6F6A02A55A657002F538D /* SBBackgroundContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBBackgroundContainerView.swift; sourceTree = "<group>"; };
+		94DB14182A5B977B00F12A55 /* SBProgressHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBProgressHUD.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +75,7 @@
 			children = (
 				50C6F6A02A55A657002F538D /* SBBackgroundContainerView.swift */,
 				50B7BACC2A58F66A00906807 /* SBProgressContainerView.swift */,
+				94DB14182A5B977B00F12A55 /* SBProgressHUD.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -195,6 +198,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94DB14192A5B977B00F12A55 /* SBProgressHUD.swift in Sources */,
 				50B7BACD2A58F66A00906807 /* SBProgressContainerView.swift in Sources */,
 				50C6F6A12A55A657002F538D /* SBBackgroundContainerView.swift in Sources */,
 			);
