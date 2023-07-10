@@ -9,6 +9,12 @@
 
 import UIKit
 
+@objc
+public protocol SBProgressHUDDelegate: NSObjectProtocol {
+    @objc
+    optional func hideProgressHUD(_ progressHUD: SBProgressHUD)
+}
+
 public class SBProgressHUD: UIView {
     public enum Style {
         case activityIndicator
@@ -25,6 +31,8 @@ public class SBProgressHUD: UIView {
         case zoomOut
         case zoomIn
     }
+
+    public weak var delegate: SBProgressHUDDelegate?
 
     public var style: Style {
         didSet {
@@ -678,6 +686,10 @@ public class SBProgressHUD: UIView {
             if self.removeFromSuperviewWhenStopped {
                 self.removeFromSuperview()
             }
+        }
+
+        if let delegate = self.delegate, delegate.responds(to: #selector(SBProgressHUDDelegate.hideProgressHUD(_:))) {
+            delegate.perform(#selector(SBProgressHUDDelegate.hideProgressHUD(_:)), with: self)
         }
     }
 
