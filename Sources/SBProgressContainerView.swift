@@ -183,12 +183,12 @@ internal final class SBProgressContainerView: UIView {
     private func doughnutProgressContentPathBuilder(_ rect: CGRect, progress: Float) -> CGPath? {
         let lineWidth: CGFloat = 3.0
 
-        let arcCenter: CGPoint = .init(x: rect.midX, y: rect.midY)
+        let arcCenter = CGPoint(x: rect.midX, y: rect.midY)
         let startAngle: CGFloat = -0.5 * .pi
         let endAngle: CGFloat = 2.0 * .pi * CGFloat(progress) + (-0.5 * .pi)
 
-        let doughnutInsideRadius: CGFloat = rect.size.width / 2.0 - lineWidth
-        let doughnutOutsideRadius: CGFloat = rect.size.width / 2.0
+        let doughnutInsideRadius = rect.size.width / 2.0 - lineWidth
+        let doughnutOutsideRadius = rect.size.width / 2.0
 
         let doughnutInsideContentPath = UIBezierPath(arcCenter: arcCenter, radius: doughnutInsideRadius, startAngle: startAngle, endAngle: endAngle, clockwise: true)
         doughnutInsideContentPath.addLine(to: arcCenter)
@@ -204,8 +204,8 @@ internal final class SBProgressContainerView: UIView {
     }
 
     private func pieProgressContentPathBuilder(_ rect: CGRect, progress: Float) -> CGPath? {
-        let arcCenter: CGPoint = .init(x: rect.midX, y: rect.midY)
-        let radius: CGFloat = rect.size.width / 2.0
+        let arcCenter = CGPoint(x: rect.midX, y: rect.midY)
+        let radius = rect.size.width / 2.0
         let startAngle: CGFloat = -0.5 * .pi
         let endAngle: CGFloat = 2.0 * .pi * CGFloat(progress) + (-0.5 * .pi)
 
