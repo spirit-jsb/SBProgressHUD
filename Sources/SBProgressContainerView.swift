@@ -123,11 +123,11 @@ internal final class SBProgressContainerView: UIView {
         fatalError("progressContentPathBuilder(_:) has not been implemented")
     }
 
-    private func linearProgressContentPathBuilder(_ rect: CGRect, progress: Float) -> CGPath? {
+    private func linearProgressContentPathBuilder(_ rect: CGRect, progress: Float) -> UIBezierPath {
         let actualRect = rect.inset(by: UIEdgeInsets(top: 1.5, left: 1.5, bottom: 1.5, right: 1.5))
 
         let amount = actualRect.size.width * CGFloat(progress)
-        
+
         let radius = actualRect.size.height / 2.0
 
         let leftCenter = CGPoint(x: actualRect.minX + radius, y: actualRect.midY)
@@ -153,7 +153,7 @@ internal final class SBProgressContainerView: UIView {
             linearProgressContentPath.addArc(withCenter: leftCenter, radius: radius, startAngle: .pi, endAngle: 1.5 * .pi, clockwise: true)
             linearProgressContentPath.addLine(to: .init(x: actualRect.minX + amount, y: actualRect.minY))
             linearProgressContentPath.addLine(to: .init(x: actualRect.minX + amount, y: actualRect.midY))
-            
+
             linearProgressContentPath.move(to: .init(x: actualRect.minX, y: actualRect.midY))
             linearProgressContentPath.addArc(withCenter: leftCenter, radius: radius, startAngle: .pi, endAngle: 0.5 * .pi, clockwise: false)
             linearProgressContentPath.addLine(to: .init(x: actualRect.minX + amount, y: actualRect.maxY))
@@ -161,15 +161,15 @@ internal final class SBProgressContainerView: UIView {
         } else if amount > (actualRect.size.width - radius) && amount < actualRect.size.width {
             var angle = acos((amount - (actualRect.size.width - radius)) / radius)
             if angle.isNaN {
-              angle = 0.0
+                angle = 0.0
             }
-            
+
             linearProgressContentPath.move(to: .init(x: actualRect.minX, y: actualRect.midY))
             linearProgressContentPath.addArc(withCenter: leftCenter, radius: radius, startAngle: .pi, endAngle: 1.5 * .pi, clockwise: true)
             linearProgressContentPath.addLine(to: .init(x: actualRect.minX + (actualRect.size.width - radius), y: actualRect.minY))
             linearProgressContentPath.addArc(withCenter: rightCenter, radius: radius, startAngle: 1.5 * .pi, endAngle: (2.0 * .pi) - angle, clockwise: true)
             linearProgressContentPath.addLine(to: .init(x: actualRect.minX + amount, y: actualRect.midY))
-            
+
             linearProgressContentPath.move(to: .init(x: actualRect.minX, y: actualRect.midY))
             linearProgressContentPath.addArc(withCenter: leftCenter, radius: radius, startAngle: .pi, endAngle: 0.5 * .pi, clockwise: false)
             linearProgressContentPath.addLine(to: .init(x: actualRect.minX + (actualRect.size.width - radius), y: actualRect.maxY))
@@ -177,10 +177,10 @@ internal final class SBProgressContainerView: UIView {
             linearProgressContentPath.addLine(to: .init(x: actualRect.minX + amount, y: actualRect.midY))
         }
 
-        return linearProgressContentPath.cgPath
+        return linearProgressContentPath
     }
 
-    private func doughnutProgressContentPathBuilder(_ rect: CGRect, progress: Float) -> CGPath? {
+    private func doughnutProgressContentPathBuilder(_ rect: CGRect, progress: Float) -> UIBezierPath {
         let lineWidth: CGFloat = 3.0
 
         let arcCenter = CGPoint(x: rect.midX, y: rect.midY)
@@ -200,10 +200,10 @@ internal final class SBProgressContainerView: UIView {
         doughnutProgressContentPath.append(doughnutInsideContentPath.reversing())
         doughnutProgressContentPath.append(doughnutOutsideContentPath)
 
-        return doughnutProgressContentPath.cgPath
+        return doughnutProgressContentPath
     }
 
-    private func pieProgressContentPathBuilder(_ rect: CGRect, progress: Float) -> CGPath? {
+    private func pieProgressContentPathBuilder(_ rect: CGRect, progress: Float) -> UIBezierPath {
         let arcCenter = CGPoint(x: rect.midX, y: rect.midY)
         let radius = rect.size.width / 2.0
         let startAngle: CGFloat = -0.5 * .pi
@@ -212,7 +212,7 @@ internal final class SBProgressContainerView: UIView {
         let pieProgressContentPath = UIBezierPath(arcCenter: arcCenter, radius: radius, startAngle: startAngle, endAngle: endAngle, clockwise: true)
         pieProgressContentPath.addLine(to: arcCenter)
 
-        return pieProgressContentPath.cgPath
+        return pieProgressContentPath
     }
 }
 
