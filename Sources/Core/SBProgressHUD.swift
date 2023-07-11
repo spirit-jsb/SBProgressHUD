@@ -475,16 +475,6 @@ public class SBProgressHUD: UIView {
         self.removeObservers()
     }
 
-    private func constructViewHierarchy() {
-        self.bezelView.addSubview(self.topSpacerView)
-        self.bezelView.addSubview(self.titleLabel)
-        self.bezelView.addSubview(self.detailsLabel)
-        self.bezelView.addSubview(self.bottomSpacerView)
-
-        self.addSubview(self.bezelView)
-        self.addSubview(self.backgroundView)
-    }
-
     public static func showProgressHUD(onView view: UIView?, animated: Bool) -> SBProgressHUD {
         let progressHUD = SBProgressHUD()
 
@@ -587,6 +577,16 @@ public class SBProgressHUD: UIView {
         RunLoop.current.add(delayHideTimer, forMode: .common)
 
         self.delayHideTimer = delayHideTimer
+    }
+
+    private func constructViewHierarchy() {
+        self.bezelView.addSubview(self.topSpacerView)
+        self.bezelView.addSubview(self.titleLabel)
+        self.bezelView.addSubview(self.detailsLabel)
+        self.bezelView.addSubview(self.bottomSpacerView)
+
+        self.addSubview(self.bezelView)
+        self.addSubview(self.backgroundView)
     }
 
     private func addObservers() {
