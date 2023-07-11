@@ -351,6 +351,7 @@ public class SBProgressHUD: UIView {
         self.addObservers()
     }
 
+    @available(*, unavailable)
     override public init(frame: CGRect) {
         fatalError("init(frame:) has not been implemented")
     }
