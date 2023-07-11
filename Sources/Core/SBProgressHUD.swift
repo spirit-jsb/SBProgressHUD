@@ -477,7 +477,6 @@ public class SBProgressHUD: UIView {
 
     public static func showProgressHUD(onView view: UIView?, animated: Bool) -> SBProgressHUD {
         let progressHUD = SBProgressHUD()
-
         progressHUD.removeFromSuperviewWhenStopped = true
 
         view?.addSubview(progressHUD)
@@ -492,7 +491,6 @@ public class SBProgressHUD: UIView {
         guard let progressHUD = SBProgressHUD.getProgressHUD(fromView: view) else {
             return false
         }
-
         progressHUD.removeFromSuperviewWhenStopped = true
 
         progressHUD.hideProgressHUD(animated: animated)
