@@ -8,47 +8,92 @@
 @testable import SBProgressHUD
 import XCTest
 
-private func SBTestsProgressHUDVisible(_ progressHUD: SBProgressHUD, _ rootView: UIView?) {
-    XCTAssertEqual(progressHUD.superview, rootView, "the HUD should be added to the view.")
-
-    XCTAssertEqual(progressHUD.alpha, 1.0, "the HUD should be visible.")
-    XCTAssertFalse(progressHUD.isHidden, "the HUD should be visible.")
-
-    XCTAssertEqual(progressHUD.bezelView.alpha, 1.0, "the HUD should be visible.")
-}
-
-private func SBTestsProgressHUDHidden(_ progressHUD: SBProgressHUD, _ rootView: UIView?) {
-    XCTAssertEqual(progressHUD.alpha, 0.0, "the HUD should be faded out.")
-}
-
-private func SBTestsProgressHUDHiddenAndRemoved(_ progressHUD: SBProgressHUD, _ rootView: UIView?) {
-    XCTAssertNil(progressHUD.superview, "the HUD should not have a superview.")
-    XCTAssertNil(rootView?.subviews.first(where: { $0 == progressHUD }), "the HUD should not be part of the view hierarchy.")
-
-    SBTestsProgressHUDHidden(progressHUD, rootView)
-}
-
 final class SBProgressHUDTests: XCTestCase {
     private var rootView: UIView?
+
+    private var hideExpectation: XCTestExpectation?
 
     override func setUp() {
         super.setUp()
 
         let keyWindow: UIWindow?
         if #available(iOS 13.0, *) {
-            // 部分情况下获取到的 activationState == .foregroundInactive，
-            // 即场景处于前台但未接收事件 (A state that indicates that the scene is running in the foreground but is not receiving events.)
-            // 这种情况通过调用 UIApplication.shared.windows.first(where: { $0.isKeyWindow }) 方法尝试再次获取
-            // https://stackoverflow.com/questions/57134259/how-to-resolve-keywindow-was-deprecated-in-ios-13-0
-            keyWindow = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }).flatMap { $0 as? UIWindowScene }.flatMap { $0.windows.first(where: { $0.isKeyWindow }) } ?? UIApplication.shared.windows.first(where: { $0.isKeyWindow })
+            keyWindow = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.flatMap { $0.windows }.first { $0.isKeyWindow }
         } else {
-            keyWindow = UIApplication.shared.windows.first(where: { $0.isKeyWindow })
+            keyWindow = UIApplication.shared.windows.first { $0.isKeyWindow }
         }
 
         self.rootView = keyWindow?.rootViewController?.view
     }
 
-    func testInitialize() {
-        XCTAssertNotNil(SBProgressHUD())
+    func testNonAnimatedConvenienceHUD() {
+        let progressHUD = SBProgressHUD.showProgressHUD(onView: self.rootView, animated: false)
+
+        XCTAssertEqual(progressHUD.alpha, 1.0, "the HUD should be visible.")
+        XCTAssertEqual(progressHUD.backgroundView.alpha, 1.0, "the HUD should be visible.")
+        XCTAssertEqual(progressHUD.bezelView.alpha, 1.0, "the HUD should be visible.")
+
+        XCTAssertEqual(progressHUD.superview, self.rootView, "the HUD should be added to the view.")
+
+        XCTAssertEqual(SBProgressHUD.getProgressHUD(fromView: self.rootView), progressHUD, "the HUD should be found via the convenience operation.")
+
+        XCTAssertNotEqual(progressHUD.backgroundView.layer.animationKeys()?.contains("opacity"), true, "the opacity should NOT be animated in backgroundView")
+        XCTAssertNotEqual(progressHUD.bezelView.layer.animationKeys()?.contains("opacity"), true, "the opacity should NOT be animated in bezelView")
+
+        XCTAssertTrue(SBProgressHUD.hideProgressHUD(fromView: self.rootView, animated: false), "the HUD should be found and removed.")
+
+        XCTAssertEqual(progressHUD.alpha, 0.0, "the HUD should be hidden")
+        XCTAssertEqual(progressHUD.backgroundView.alpha, 0.0, "the HUD backgroundView should be hidden")
+        XCTAssertEqual(progressHUD.bezelView.alpha, 0.0, "the HUD bezelView should be hidden")
+
+        XCTAssertNil(progressHUD.superview, "the HUD should not have a superview.")
+
+        XCTAssertNotEqual(progressHUD.backgroundView.layer.animationKeys()?.contains("opacity"), true, "the opacity should NOT be animated in backgroundView")
+        XCTAssertNotEqual(progressHUD.bezelView.layer.animationKeys()?.contains("opacity"), true, "the opacity should NOT be animated in bezelView")
+
+        XCTAssertFalse(SBProgressHUD.hideProgressHUD(fromView: self.rootView, animated: false), "a subsequent HUD hide operation should fail.")
+    }
+
+    func testAnimatedConvenienceHUD() {
+        self.hideExpectation = self.expectation(description: "the hideProgressHUD: delegate should have been called.")
+
+        let progressHUD = SBProgressHUD.showProgressHUD(onView: self.rootView, animated: true)
+        progressHUD.delegate = self
+
+        XCTAssertEqual(progressHUD.alpha, 1.0, "the HUD should be visible.")
+        XCTAssertEqual(progressHUD.backgroundView.alpha, 1.0, "the HUD should be visible.")
+        XCTAssertEqual(progressHUD.bezelView.alpha, 1.0, "the HUD should be visible.")
+
+        XCTAssertEqual(progressHUD.superview, self.rootView, "the HUD should be added to the view.")
+
+        XCTAssertEqual(SBProgressHUD.getProgressHUD(fromView: self.rootView), progressHUD, "the HUD should be found via the convenience operation.")
+
+        XCTAssertEqual(progressHUD.backgroundView.layer.animationKeys()?.contains("opacity"), true, "the opacity should be animated in backgroundView")
+        XCTAssertEqual(progressHUD.bezelView.layer.animationKeys()?.contains("opacity"), true, "the opacity should be animated in bezelView")
+
+        XCTAssertTrue(SBProgressHUD.hideProgressHUD(fromView: self.rootView, animated: true), "the HUD should be found and removed.")
+
+        XCTAssertEqual(progressHUD.alpha, 1.0, "the HUD should still be visible")
+        XCTAssertEqual(progressHUD.backgroundView.alpha, 0.0, "the HUD backgroundView should be hidden")
+        XCTAssertEqual(progressHUD.bezelView.alpha, 0.0, "the HUD bezelView should be hidden")
+
+        XCTAssertEqual(progressHUD.superview, self.rootView, "the HUD should still be part of the view hierarchy")
+
+        XCTAssertEqual(progressHUD.backgroundView.layer.animationKeys()?.contains("opacity"), true, "the opacity should be animated in backgroundView")
+        XCTAssertEqual(progressHUD.bezelView.layer.animationKeys()?.contains("opacity"), true, "the opacity should be animated in bezelView")
+
+        self.wait(for: [self.hideExpectation!], timeout: 5.0)
+    }
+}
+
+extension SBProgressHUDTests: SBProgressHUDDelegate {
+    func hideProgressHUD(_ progressHUD: SBProgressHUD) {
+        XCTAssertEqual(progressHUD.alpha, 0.0, "the hud should be hidden")
+
+        XCTAssertNil(progressHUD.superview, "the hud should be not have a superview")
+
+        XCTAssertFalse(SBProgressHUD.hideProgressHUD(fromView: self.rootView, animated: false), "a subsequent HUD hide operation should fail.")
+
+        self.hideExpectation?.fulfill()
     }
 }
