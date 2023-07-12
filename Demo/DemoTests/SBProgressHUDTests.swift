@@ -11,9 +11,6 @@ import XCTest
 final class SBProgressHUDTests: XCTestCase {
     private var rootView: UIView?
 
-    private var progress: Float!
-    private var progressObject = Progress(totalUnitCount: 100)
-
     private var screenAccuracy: CGFloat!
     private var safeAreaInsets: UIEdgeInsets!
 
@@ -31,63 +28,70 @@ final class SBProgressHUDTests: XCTestCase {
 
         self.rootView = keyWindow?.rootViewController?.view
 
-        self.progress = 0.0
-        self.progressObject.completedUnitCount = 0
-
         self.screenAccuracy = 1.0 / UIScreen.main.scale
         self.safeAreaInsets = keyWindow?.safeAreaInsets ?? .zero
     }
 
     func testProgress() {
-        let progressHUD = SBProgressHUD.showProgressHUD(onView: self.rootView, animated: true)
+        let progressHUD = SBProgressHUD()
         progressHUD.style = .linearProgress
+        progressHUD.progress = 0.2
 
-        let updatingProgressValueTimer = CADisplayLink(target: self, selector: #selector(self.updateProgress))
-        updatingProgressValueTimer.add(to: .current, forMode: .default)
+        XCTAssertEqual(self.getSubview(withType: SBProgressContainerView.self, in: progressHUD)?.progress, 0.2)
 
-        let testingProgressTimer = Timer(timeInterval: 0.1, repeats: true) { [unowned self] _ in
-            progressHUD.progress = self.progress
-        }
-        RunLoop.current.add(testingProgressTimer, forMode: .default)
+        progressHUD.progress = 0.4
 
-        let testingProgressExpectation = self.expectation(description: "the HUD progress testing should be finished.")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-            updatingProgressValueTimer.invalidate()
+        XCTAssertEqual(self.getSubview(withType: SBProgressContainerView.self, in: progressHUD)?.progress, 0.4)
 
-            testingProgressTimer.invalidate()
+        progressHUD.progress = 0.6
 
-            testingProgressExpectation.fulfill()
-        }
-
-        self.wait(for: [testingProgressExpectation], timeout: 5.0)
-
-        SBProgressHUD.hideProgressHUD(fromView: self.rootView, animated: false)
+        XCTAssertEqual(self.getSubview(withType: SBProgressContainerView.self, in: progressHUD)?.progress, 0.6)
     }
 
     func testProgressObject() {
-        let progressHUD = SBProgressHUD.showProgressHUD(onView: self.rootView, animated: true)
-        progressHUD.style = .doughnutProgress
+        let progressObject = Progress(totalUnitCount: 100)
 
-        let updatingProgressValueTimer = CADisplayLink(target: self, selector: #selector(self.updateProgress))
-        updatingProgressValueTimer.add(to: .current, forMode: .default)
+        let progressHUD = SBProgressHUD()
+        progressHUD.style = .linearProgress
+        progressHUD.progressObject = progressObject
 
-        let testingProgressObjectTimer = Timer(timeInterval: 0.1, repeats: true) { [unowned self] _ in
-            progressHUD.progressObject = self.progressObject
-        }
-        RunLoop.current.add(testingProgressObjectTimer, forMode: .default)
+        let firstProgressObjectTestingExpectation = self.expectation(description: "the HUD progressObject testing should be finished.")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            progressObject.becomeCurrent(withPendingUnitCount: 20)
+            progressObject.resignCurrent()
 
-        let testingProgressExpectation = self.expectation(description: "the HUD progress testing should be finished.")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-            updatingProgressValueTimer.invalidate()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                XCTAssertEqual(self.getSubview(withType: SBProgressContainerView.self, in: progressHUD)?.progress, 0.2)
 
-            testingProgressObjectTimer.invalidate()
-
-            testingProgressExpectation.fulfill()
+                firstProgressObjectTestingExpectation.fulfill()
+            }
         }
 
-        self.wait(for: [testingProgressExpectation], timeout: 5.0)
+        let secondProgressObjectTestingExpectation = self.expectation(description: "the HUD progressObject testing should be finished.")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            progressObject.becomeCurrent(withPendingUnitCount: 20)
+            progressObject.resignCurrent()
 
-        SBProgressHUD.hideProgressHUD(fromView: self.rootView, animated: false)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                XCTAssertEqual(self.getSubview(withType: SBProgressContainerView.self, in: progressHUD)?.progress, 0.4)
+
+                secondProgressObjectTestingExpectation.fulfill()
+            }
+        }
+
+        let thirdProgressObjectTestingExpectation = self.expectation(description: "the HUD progressObject testing should be finished.")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+            progressObject.becomeCurrent(withPendingUnitCount: 20)
+            progressObject.resignCurrent()
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                XCTAssertEqual(self.getSubview(withType: SBProgressContainerView.self, in: progressHUD)?.progress, 0.6)
+
+                thirdProgressObjectTestingExpectation.fulfill()
+            }
+        }
+
+        self.wait(for: [firstProgressObjectTestingExpectation, secondProgressObjectTestingExpectation, thirdProgressObjectTestingExpectation], timeout: 5.0)
     }
 
     func testColor() {
@@ -364,20 +368,6 @@ final class SBProgressHUDTests: XCTestCase {
         }
 
         return result
-    }
-
-    @objc
-    private func updateProgress() {
-        if self.progress > 1.0 {
-            self.progress = 0.0
-        }
-
-        if self.progressObject.completedUnitCount > 100 {
-            self.progressObject.completedUnitCount = 0
-        }
-
-        self.progress += 0.01
-        self.progressObject.completedUnitCount += 1
     }
 }
 
