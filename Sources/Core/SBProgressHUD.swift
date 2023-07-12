@@ -34,6 +34,8 @@ public class SBProgressHUD: UIView {
 
     public weak var delegate: SBProgressHUDDelegate?
 
+    public var completion: (() -> Void)?
+
     public var style: Style {
         didSet {
             if oldValue != self.style {
@@ -685,6 +687,10 @@ public class SBProgressHUD: UIView {
             if self.removeFromSuperviewWhenStopped {
                 self.removeFromSuperview()
             }
+        }
+
+        if let completion = self.completion {
+            completion()
         }
 
         if let delegate = self.delegate, delegate.responds(to: #selector(SBProgressHUDDelegate.hideProgressHUD(_:))) {
