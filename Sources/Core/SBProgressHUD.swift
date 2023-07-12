@@ -306,7 +306,7 @@ public class SBProgressHUD: UIView {
 
     private var motionEffectGroup: UIMotionEffectGroup?
 
-    init() {
+    public init() {
         self.style = .activityIndicator
         self.animationType = .fade
 
