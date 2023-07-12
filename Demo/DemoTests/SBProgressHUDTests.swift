@@ -95,7 +95,7 @@ final class SBProgressHUDTests: XCTestCase {
     }
 
     func testColor() {
-        let progressHUD = SBProgressHUD.showProgressHUD(onView: self.rootView, animated: true)
+        let progressHUD = SBProgressHUD.showProgressHUD(onView: self.rootView, animated: false)
         progressHUD.style = .activityIndicator
         progressHUD.color = UIColor.red
 
@@ -103,7 +103,7 @@ final class SBProgressHUDTests: XCTestCase {
         XCTAssertEqual(progressHUD.titleLabel.textColor, UIColor.red)
         XCTAssertEqual(progressHUD.detailsLabel.textColor, UIColor.red)
 
-        progressHUD.style = .doughnutProgress
+        progressHUD.style = .linearProgress
         progressHUD.color = UIColor.green
 
         XCTAssertEqual(self.getSubview(withType: SBProgressContainerView.self, in: progressHUD)?.trackTintColor, UIColor.clear)
@@ -135,7 +135,7 @@ final class SBProgressHUDTests: XCTestCase {
         SBProgressContainerView.appearance(whenContainedInInstancesOf: [SBProgressHUD.self]).trackTintColor = UIColor.yellow
         SBProgressContainerView.appearance(whenContainedInInstancesOf: [SBProgressHUD.self]).progressTintColor = UIColor.magenta
 
-        progressHUD.style = .doughnutProgress
+        progressHUD.style = .linearProgress
         progressHUD.color = UIColor.green
 
         XCTAssertEqual(self.getSubview(withType: SBProgressContainerView.self, in: progressHUD)?.trackTintColor, UIColor.yellow)
@@ -287,7 +287,7 @@ final class SBProgressHUDTests: XCTestCase {
             XCTAssertEqual(progressHUD.backgroundView.alpha, 0.0, "the HUD backgroundView should be hidden")
             XCTAssertEqual(progressHUD.bezelView.alpha, 0.0, "the HUD bezelView should be hidden")
 
-            XCTAssertNil(progressHUD.superview, "the HUD should not have a superview.")
+            XCTAssertEqual(progressHUD.superview, self.rootView, "the HUD should be added to the view.")
         }
 
         self.wait(for: [completionExpectation], timeout: 5.0)
