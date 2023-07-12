@@ -331,7 +331,7 @@ final class SBProgressHUDTests: XCTestCase {
             XCTAssertEqual(progressHUD.backgroundView.alpha, 0.0, "the HUD backgroundView should be hidden")
             XCTAssertEqual(progressHUD.bezelView.alpha, 0.0, "the HUD bezelView should be hidden")
 
-            XCTAssertEqual(progressHUD.superview, self.rootView, "the HUD should be added to the view.")
+            XCTAssertNil(progressHUD.superview, "the HUD should not have a superview.")
         }
 
         self.wait(for: [completionExpectation], timeout: 5.0)
