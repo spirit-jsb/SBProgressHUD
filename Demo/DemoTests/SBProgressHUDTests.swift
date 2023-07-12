@@ -207,6 +207,88 @@ final class SBProgressHUDTests: XCTestCase {
         SBProgressHUD.hideProgressHUD(fromView: self.rootView, animated: false)
     }
 
+    func testGracePeriod() {
+        let completionExpectation = self.expectation(description: "the HUD completion callback should have been called.")
+
+        let progressHUD = SBProgressHUD()
+        progressHUD.gracePeriod = 2.0
+
+        progressHUD.completion = {
+            completionExpectation.fulfill()
+        }
+
+        self.rootView?.addSubview(progressHUD)
+
+        progressHUD.showProgressHUD(animated: true)
+
+        XCTAssertEqual(progressHUD.alpha, 0.0, "the HUD should be hidden.")
+        XCTAssertEqual(progressHUD.backgroundView.alpha, 0.0, "the HUD backgroundView should be hidden.")
+        XCTAssertEqual(progressHUD.bezelView.alpha, 0.0, "the HUD bezelView should be hidden.")
+
+        XCTAssertEqual(progressHUD.superview, self.rootView, "the HUD should be added to the view.")
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            XCTAssertEqual(progressHUD.alpha, 0.0, "the HUD should be hidden.")
+            XCTAssertEqual(progressHUD.backgroundView.alpha, 0.0, "the HUD backgroundView should be hidden.")
+            XCTAssertEqual(progressHUD.bezelView.alpha, 0.0, "the HUD bezelView should be hidden.")
+
+            XCTAssertEqual(progressHUD.superview, self.rootView, "the HUD should be added to the view.")
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            XCTAssertEqual(progressHUD.alpha, 1.0, "the HUD should be visible.")
+            XCTAssertEqual(progressHUD.backgroundView.alpha, 1.0, "the HUD should be visible.")
+            XCTAssertEqual(progressHUD.bezelView.alpha, 1.0, "the HUD should be visible.")
+
+            XCTAssertEqual(progressHUD.superview, self.rootView, "the HUD should be added to the view.")
+
+            progressHUD.hideProgressHUD(animated: false)
+        }
+
+        self.wait(for: [completionExpectation], timeout: 5.0)
+    }
+
+    func testMinimumDisplayingTime() {
+        let completionExpectation = self.expectation(description: "the HUD completion callback should have been called.")
+
+        let progressHUD = SBProgressHUD()
+        progressHUD.minimumDisplayingTime = 2.0
+
+        progressHUD.completion = {
+            completionExpectation.fulfill()
+        }
+
+        self.rootView?.addSubview(progressHUD)
+
+        progressHUD.showProgressHUD(animated: true)
+
+        XCTAssertEqual(progressHUD.alpha, 1.0, "the HUD should be visible.")
+        XCTAssertEqual(progressHUD.backgroundView.alpha, 1.0, "the HUD should be visible.")
+        XCTAssertEqual(progressHUD.bezelView.alpha, 1.0, "the HUD should be visible.")
+
+        XCTAssertEqual(progressHUD.superview, self.rootView, "the HUD should be added to the view.")
+
+        progressHUD.hideProgressHUD(animated: false)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            XCTAssertEqual(progressHUD.alpha, 1.0, "the HUD should be visible.")
+            XCTAssertEqual(progressHUD.backgroundView.alpha, 1.0, "the HUD should be visible.")
+            XCTAssertEqual(progressHUD.bezelView.alpha, 1.0, "the HUD should be visible.")
+
+            XCTAssertEqual(progressHUD.superview, self.rootView, "the HUD should be added to the view.")
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            XCTAssertEqual(progressHUD.alpha, 0.0, "the HUD should be hidden")
+            XCTAssertEqual(progressHUD.backgroundView.alpha, 0.0, "the HUD backgroundView should be hidden")
+            XCTAssertEqual(progressHUD.bezelView.alpha, 0.0, "the HUD bezelView should be hidden")
+
+            XCTAssertNil(progressHUD.superview, "the HUD should not have a superview.")
+        }
+
+        self.wait(for: [completionExpectation], timeout: 5.0)
+    }
+
     func testNonAnimatedConvenienceHUD() {
         let progressHUD = SBProgressHUD.showProgressHUD(onView: self.rootView, animated: false)
 
