@@ -14,6 +14,9 @@ final class SBProgressHUDTests: XCTestCase {
     private var progress: Float!
     private var progressObject = Progress(totalUnitCount: 100)
 
+    private var screenAccuracy: CGFloat!
+    private var safeAreaInsets: UIEdgeInsets!
+
     private var hideExpectation: XCTestExpectation?
 
     override func setUp() {
@@ -30,6 +33,9 @@ final class SBProgressHUDTests: XCTestCase {
 
         self.progress = 0.0
         self.progressObject.completedUnitCount = 0
+
+        self.screenAccuracy = 1.0 / UIScreen.main.scale
+        self.safeAreaInsets = keyWindow?.safeAreaInsets ?? .zero
     }
 
     func testProgress() {
@@ -80,6 +86,123 @@ final class SBProgressHUDTests: XCTestCase {
         }
 
         self.wait(for: [testingProgressExpectation], timeout: 5.0)
+
+        SBProgressHUD.hideProgressHUD(fromView: self.rootView, animated: false)
+    }
+
+    func testColor() {
+        let progressHUD = SBProgressHUD.showProgressHUD(onView: self.rootView, animated: true)
+        progressHUD.style = .activityIndicator
+        progressHUD.color = UIColor.red
+
+        XCTAssertEqual(self.getSubview(withType: UIActivityIndicatorView.self, in: progressHUD)?.color, UIColor.red)
+        XCTAssertEqual(progressHUD.titleLabel.textColor, UIColor.red)
+        XCTAssertEqual(progressHUD.detailsLabel.textColor, UIColor.red)
+
+        progressHUD.style = .doughnutProgress
+        progressHUD.color = UIColor.green
+
+        XCTAssertEqual(self.getSubview(withType: SBProgressContainerView.self, in: progressHUD)?.trackTintColor, UIColor.clear)
+        XCTAssertEqual(self.getSubview(withType: SBProgressContainerView.self, in: progressHUD)?.progressTintColor, UIColor.green)
+        XCTAssertEqual(progressHUD.titleLabel.textColor, UIColor.green)
+        XCTAssertEqual(progressHUD.detailsLabel.textColor, UIColor.green)
+
+        class CustomView: UIView {}
+
+        let customView = CustomView()
+
+        progressHUD.style = .customView
+        progressHUD.color = UIColor.blue
+        progressHUD.customView = customView
+
+        XCTAssertEqual(self.getSubview(withType: CustomView.self, in: progressHUD)?.tintColor, UIColor.blue)
+        XCTAssertEqual(progressHUD.titleLabel.textColor, UIColor.blue)
+        XCTAssertEqual(progressHUD.detailsLabel.textColor, UIColor.blue)
+
+        UIActivityIndicatorView.appearance(whenContainedInInstancesOf: [SBProgressHUD.self]).color = UIColor.cyan
+
+        progressHUD.style = .activityIndicator
+        progressHUD.color = UIColor.red
+
+        XCTAssertEqual(self.getSubview(withType: UIActivityIndicatorView.self, in: progressHUD)?.color, UIColor.cyan)
+        XCTAssertEqual(progressHUD.titleLabel.textColor, UIColor.red)
+        XCTAssertEqual(progressHUD.detailsLabel.textColor, UIColor.red)
+
+        SBProgressContainerView.appearance(whenContainedInInstancesOf: [SBProgressHUD.self]).trackTintColor = UIColor.yellow
+        SBProgressContainerView.appearance(whenContainedInInstancesOf: [SBProgressHUD.self]).progressTintColor = UIColor.magenta
+
+        progressHUD.style = .doughnutProgress
+        progressHUD.color = UIColor.green
+
+        XCTAssertEqual(self.getSubview(withType: SBProgressContainerView.self, in: progressHUD)?.trackTintColor, UIColor.yellow)
+        XCTAssertEqual(self.getSubview(withType: SBProgressContainerView.self, in: progressHUD)?.progressTintColor, UIColor.magenta)
+        XCTAssertEqual(progressHUD.titleLabel.textColor, UIColor.green)
+        XCTAssertEqual(progressHUD.detailsLabel.textColor, UIColor.green)
+
+        SBProgressHUD.hideProgressHUD(fromView: self.rootView, animated: false)
+    }
+
+    func testLayout() {
+        let progressHUD = SBProgressHUD.showProgressHUD(onView: self.rootView, animated: false)
+
+        // left/up
+        progressHUD.offset = UIOffset(horizontal: -.greatestFiniteMagnitude, vertical: -.greatestFiniteMagnitude)
+        progressHUD.margin = UIEdgeInsets(top: 10.0, left: 10.0, bottom: 0.0, right: 0.0)
+
+        progressHUD.setNeedsLayout()
+        progressHUD.layoutIfNeeded()
+
+        XCTAssertEqual(progressHUD.bezelView.frame.minX, self.safeAreaInsets.left + 10.0, accuracy: self.screenAccuracy)
+        XCTAssertEqual(progressHUD.bezelView.frame.minY, self.safeAreaInsets.top + 10.0, accuracy: self.screenAccuracy)
+
+        // right/up
+        progressHUD.offset = UIOffset(horizontal: .greatestFiniteMagnitude, vertical: -.greatestFiniteMagnitude)
+        progressHUD.margin = UIEdgeInsets(top: 10.0, left: 0.0, bottom: 0.0, right: 10.0)
+
+        progressHUD.setNeedsLayout()
+        progressHUD.layoutIfNeeded()
+
+        XCTAssertEqual(progressHUD.bezelView.frame.maxX, self.rootView!.bounds.width - self.safeAreaInsets.right - 10.0, accuracy: self.screenAccuracy)
+        XCTAssertEqual(progressHUD.bezelView.frame.minY, self.safeAreaInsets.top + 10.0, accuracy: self.screenAccuracy)
+
+        // left/down
+        progressHUD.offset = UIOffset(horizontal: -.greatestFiniteMagnitude, vertical: .greatestFiniteMagnitude)
+        progressHUD.margin = UIEdgeInsets(top: 0.0, left: 10.0, bottom: 10.0, right: 0.0)
+
+        progressHUD.setNeedsLayout()
+        progressHUD.layoutIfNeeded()
+
+        XCTAssertEqual(progressHUD.bezelView.frame.minX, self.safeAreaInsets.left + 10.0, accuracy: self.screenAccuracy)
+        XCTAssertEqual(progressHUD.bezelView.frame.maxY, self.rootView!.bounds.height - self.safeAreaInsets.bottom - 10.0, accuracy: self.screenAccuracy)
+
+        // right/down
+        progressHUD.offset = UIOffset(horizontal: .greatestFiniteMagnitude, vertical: .greatestFiniteMagnitude)
+        progressHUD.margin = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 10.0, right: 10.0)
+
+        progressHUD.setNeedsLayout()
+        progressHUD.layoutIfNeeded()
+
+        XCTAssertEqual(progressHUD.bezelView.frame.maxX, self.rootView!.bounds.width - self.safeAreaInsets.right - 10.0, accuracy: self.screenAccuracy)
+        XCTAssertEqual(progressHUD.bezelView.frame.maxY, self.rootView!.bounds.height - self.safeAreaInsets.bottom - 10.0, accuracy: self.screenAccuracy)
+
+        // minimum size
+        progressHUD.minimumSize = CGSize(width: 50.0, height: 100.0)
+
+        progressHUD.setNeedsLayout()
+        progressHUD.layoutIfNeeded()
+
+        XCTAssertNotEqual(progressHUD.bezelView.bounds.size.width, 50.0, accuracy: self.screenAccuracy)
+        XCTAssertEqual(progressHUD.bezelView.bounds.size.height, 100.0, accuracy: self.screenAccuracy)
+
+        // content margin
+        progressHUD.minimumSize = .zero
+        progressHUD.contentMargin = UIEdgeInsets(top: 50.0, left: 50.0, bottom: 50.0, right: 50.0)
+
+        progressHUD.setNeedsLayout()
+        progressHUD.layoutIfNeeded()
+
+        XCTAssertGreaterThanOrEqual(progressHUD.bezelView.bounds.size.width, 100.0)
+        XCTAssertGreaterThanOrEqual(progressHUD.bezelView.bounds.size.height, 100.0)
 
         SBProgressHUD.hideProgressHUD(fromView: self.rootView, animated: false)
     }
@@ -141,6 +264,24 @@ final class SBProgressHUDTests: XCTestCase {
         XCTAssertEqual(progressHUD.bezelView.layer.animationKeys()?.contains("opacity"), true, "the opacity should be animated in bezelView")
 
         self.wait(for: [self.hideExpectation!], timeout: 5.0)
+    }
+
+    private func getSubview<T>(withType type: T.Type, in view: UIView) -> T? {
+        var result: T? = nil
+
+        for subview in view.subviews {
+            if subview is T {
+                result = subview as! T
+                break
+            }
+
+            result = self.getSubview(withType: type, in: subview)
+            if result != nil {
+                break
+            }
+        }
+
+        return result
     }
 
     @objc
