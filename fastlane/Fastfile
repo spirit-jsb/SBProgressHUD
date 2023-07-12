@@ -1,0 +1,100 @@
+fastlane_version "2.213.0"
+
+default_platform :ios
+
+platform :ios do
+  desc "Runs all the tests"
+  lane :tests do
+    test(destination: "platform=iOS Simulator,name=iPhone 14", swift_version: "5.0")
+  end
+
+  lane :test do |options|
+    scan(
+      scheme: "SBProgressHUD-Demo", 
+      clean: true, 
+      xcargs: "SWIFT_VERSION=#{options[:swift_version]}",
+      destination: options[:destination]
+    )
+  end
+
+  desc "Lint"
+  lane :lint do
+    pod_lib_lint
+    spm
+  end
+
+  desc "Release new version"
+  lane :release do |options|
+    target_version = options[:version]
+    raise "The version is missed. Use `fastlane release version:{version_number}`.`" if target_version.nil?
+    
+    ensure_git_branch(
+      branch: 'main'
+    )
+    ensure_git_status_clean
+
+    skip_tests = options[:skip_tests]
+    tests unless skip_tests
+
+    lint
+
+    sync_build_number_to_git
+    increment_version_number(version_number: target_version)
+    version_bump_podspec(path: "SBProgressHUD.podspec", version_number: target_version)
+
+    git_commit_all(message: "Bump version to #{target_version}")
+    
+    Actions.sh("git tag -s #{target_version} -m ''")
+        
+    push_to_git_remote
+
+    xcframework(version: target_version)
+    set_github_release(
+      repository_name: "spirit-jsb/SBProgressHUD",
+      api_token: ENV['GITHUB_TOKEN'],
+      tag_name: target_version,
+      upload_assets: ["build/SBProgressHUD-#{target_version}.zip"]
+    )
+
+    pod_push
+  end
+
+  lane :xcframework do |options|
+    target_version = "SBProgressHUD-#{options[:version]}"
+    supporting_root = "../build/#{target_version}/Supporting Files"
+    
+    xcversion(version: "~> 14.0")
+    FileUtils.rm_rf '../build'
+    
+    frameworks = {}
+    
+    ["iphoneos", 
+     "iphonesimulator"
+    ].each do |sdk|
+      archive_path = "build/SBProgressHUD-#{sdk}.xcarchive"
+      xcodebuild(
+        archive: true,
+        archive_path: archive_path,
+        scheme: "SBProgressHUD",
+        sdk: sdk,
+        build_settings: {
+          "BUILD_LIBRARY_FOR_DISTRIBUTION" => "YES",
+          "SKIP_INSTALL" => "NO"
+        }
+      )
+
+      dSYM_path = "#{Dir.pwd}/../#{archive_path}/dSYMs/SBProgressHUD.framework.dSYM"
+      frameworks["#{archive_path}/Products/Library/Frameworks/SBProgressHUD.framework"] = { dsyms: dSYM_path }
+    end
+
+    create_xcframework(
+      frameworks_with_dsyms: frameworks, 
+      output: "build/#{target_version}/SBProgressHUD.xcframework"
+    )
+
+    zip(
+      path: "build/#{target_version}",
+      output_path: "build/#{target_version}.zip"
+    )
+  end
+end
