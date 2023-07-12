@@ -216,6 +216,7 @@ final class SBProgressHUDTests: XCTestCase {
 
         let progressHUD = SBProgressHUD()
         progressHUD.gracePeriod = 2.0
+        progressHUD.removeFromSuperviewWhenStopped = true
 
         progressHUD.completion = {
             completionExpectation.fulfill()
