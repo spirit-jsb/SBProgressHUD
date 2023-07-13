@@ -73,7 +73,7 @@ SBBackgroundContainerView (Background View)
 ## 安装
 ### **Cocoapods**
 ```
-pod 'SBProgressHUD', '~> 1.0'
+pod 'SBProgressHUD-Spirit', '~> 1.0'
 ```
 ### **Swift Package Manager**
 ```

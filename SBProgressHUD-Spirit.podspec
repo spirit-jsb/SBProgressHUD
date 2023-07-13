@@ -1,6 +1,7 @@
 Pod::Spec.new do |s|
 
-    s.name        = 'SBProgressHUD'
+    s.name        = 'SBProgressHUD-Spirit'
+    s.module_name  = 'SBProgressHUD'
     s.version     = '0.1.0'
     s.summary     = 'A lightweight and pure Swift implemented library for easy to use translucent HUD for iOS with indicators and/or labels.'
   
