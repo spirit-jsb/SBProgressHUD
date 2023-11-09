@@ -63,7 +63,7 @@ platform :ios do
     target_version = "SBProgressHUD-#{options[:version]}"
     supporting_root = "../build/#{target_version}/Supporting Files"
     
-    xcversion(version: "~> 14.0")
+    xcversion(version: "~> 15.0")
     FileUtils.rm_rf '../build'
     
     frameworks = {}
