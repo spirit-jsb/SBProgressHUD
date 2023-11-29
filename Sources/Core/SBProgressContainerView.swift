@@ -139,12 +139,12 @@ internal final class SBProgressContainerView: UIView {
         let progressContentPath: UIBezierPath
 
         switch self.style {
-        case .linear:
-            progressContentPath = self.linearProgressContentPathBuilder(rect, progress: progress)
-        case .doughnut:
-            progressContentPath = self.doughnutProgressContentPathBuilder(rect, progress: progress)
-        case .pie:
-            progressContentPath = self.pieProgressContentPathBuilder(rect, progress: progress)
+            case .linear:
+                progressContentPath = self.linearProgressContentPathBuilder(rect, progress: progress)
+            case .doughnut:
+                progressContentPath = self.doughnutProgressContentPathBuilder(rect, progress: progress)
+            case .pie:
+                progressContentPath = self.pieProgressContentPathBuilder(rect, progress: progress)
         }
 
         return progressContentPath.cgPath
