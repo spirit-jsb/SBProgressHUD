@@ -1,8 +1,9 @@
 //
 //  SceneDelegate.swift
-//  SBProgressHUD-Demo
 //
-//  Created by Max on 2023/7/5.
+//  Created by Max on 2023/7/13
+//
+//  Copyright © 2023 Max. All rights reserved.
 //
 
 import UIKit
