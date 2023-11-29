@@ -1,8 +1,9 @@
 //
 //  SBProgressHUDTests.swift
-//  SBProgressHUD-DemoTests
 //
-//  Created by JONO-Jsb on 2023/7/10.
+//  Created by Max on 2023/7/13
+//
+//  Copyright © 2023 Max. All rights reserved.
 //
 
 @testable import SBProgressHUD

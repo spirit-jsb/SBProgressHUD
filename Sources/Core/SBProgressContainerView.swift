@@ -1,8 +1,9 @@
 //
 //  SBProgressContainerView.swift
-//  SBProgressHUD
 //
-//  Created by Max on 2023/7/8.
+//  Created by Max on 2023/7/13
+//
+//  Copyright © 2023 Max. All rights reserved.
 //
 
 #if canImport(UIKit)
@@ -138,12 +139,12 @@ internal final class SBProgressContainerView: UIView {
         let progressContentPath: UIBezierPath
 
         switch self.style {
-        case .linear:
-            progressContentPath = self.linearProgressContentPathBuilder(rect, progress: progress)
-        case .doughnut:
-            progressContentPath = self.doughnutProgressContentPathBuilder(rect, progress: progress)
-        case .pie:
-            progressContentPath = self.pieProgressContentPathBuilder(rect, progress: progress)
+            case .linear:
+                progressContentPath = self.linearProgressContentPathBuilder(rect, progress: progress)
+            case .doughnut:
+                progressContentPath = self.doughnutProgressContentPathBuilder(rect, progress: progress)
+            case .pie:
+                progressContentPath = self.pieProgressContentPathBuilder(rect, progress: progress)
         }
 
         return progressContentPath.cgPath
