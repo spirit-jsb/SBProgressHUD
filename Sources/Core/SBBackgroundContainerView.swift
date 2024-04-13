@@ -16,7 +16,14 @@ internal final class SBBackgroundContainerView: UIView {
         case solidColor
     }
 
-    let style: Style
+    var style: Style {
+        didSet {
+            if oldValue != self.style {
+                self.resetVisualEffects()
+                self.updateBackgroundColor()
+            }
+        }
+    }
 
     var color: UIColor? {
         didSet {

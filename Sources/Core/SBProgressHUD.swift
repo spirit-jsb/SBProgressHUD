@@ -79,6 +79,15 @@ public class SBProgressHUD: UIView {
         }
     }
 
+    public var bezelViewColor: UIColor? {
+        willSet {
+            if newValue != self.bezelViewColor {
+                self.bezelView.style = newValue == nil ? .blur : .solidColor
+                self.bezelView.color = newValue
+            }
+        }
+    }
+
     public var bezelViewBlurEffectStyle: UIBlurEffect.Style? {
         willSet {
             if newValue != nil, newValue != self.bezelViewBlurEffectStyle {
