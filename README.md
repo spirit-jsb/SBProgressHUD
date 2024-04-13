@@ -38,6 +38,7 @@ SBBackgroundContainerView (Background View)
 * progressObject
 * color
 * backgroundViewColor
+* bezelViewColor
 * bezelViewBlurEffectStyle
 * titleText
 * titleFont
