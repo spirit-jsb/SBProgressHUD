@@ -46,6 +46,7 @@ class ViewController: UITableViewController {
                 Example(titleText: "Networking", selector: #selector(self.networkingExample)),
                 Example(titleText: "Color", selector: #selector(self.colorExample)),
                 Example(titleText: "Adjust background color", selector: #selector(self.adjustBackgroundColorExample)),
+                Example(titleText: "Adjust bezel color", selector: #selector(self.adjustBezelColorExample)),
             ],
         ]
     }
@@ -322,6 +323,21 @@ class ViewController: UITableViewController {
     func adjustBackgroundColorExample() {
         let progressHUD = SBProgressHUD.showProgressHUD(onView: self.navigationController?.view, animated: true)
         progressHUD.backgroundViewColor = UIColor(white: 0.0, alpha: 0.2)
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.doSomeWork()
+
+            DispatchQueue.main.async {
+                progressHUD.hideProgressHUD(animated: true)
+            }
+        }
+    }
+
+    @objc
+    func adjustBezelColorExample() {
+        let progressHUD = SBProgressHUD.showProgressHUD(onView: self.navigationController?.view, animated: true)
+        progressHUD.color = UIColor(white: 0.95, alpha: 1.0)
+        progressHUD.bezelViewColor = UIColor(white: 0.0, alpha: 0.7)
 
         DispatchQueue.global(qos: .userInitiated).async {
             self.doSomeWork()
